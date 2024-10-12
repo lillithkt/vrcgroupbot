@@ -27,6 +27,7 @@ export enum LogEvent {
   RoleCreate = "group.role.create",
   RoleUpdate = "group.role.update",
   GroupUpdate = "group.update",
+  MemberUserupdate = "group.member.user.update",
   Unban = "group.user.unban",
 }
 
@@ -48,6 +49,7 @@ export const LogEventReadable = {
   [LogEvent.RoleUpdate]: "Role Update",
   [LogEvent.GroupUpdate]: "Group Update",
   [LogEvent.Unban]: "Unban",
+  [LogEvent.MemberUserUpdate]: "User Update"
 };
 
 export const LogEventColors = {
@@ -68,4 +70,5 @@ export const LogEventColors = {
   [LogEvent.RoleUpdate]: 0x00ff00,
   [LogEvent.GroupUpdate]: 0x00ff00,
   [LogEvent.Unban]: 0x00ff00,
+  [LogEvent.MemberUserUpdate]: 0x00ff00
 };
