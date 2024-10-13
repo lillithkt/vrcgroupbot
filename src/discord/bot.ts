@@ -1,6 +1,7 @@
 import { Client, GatewayIntentBits } from "discord.js";
 import yargs from "yargs-parser";
 import { commands } from "./commands";
+import { sendMessage } from "./rest";
 const bot = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -12,6 +13,12 @@ const bot = new Client({
 
 bot.on("ready", () => {
   console.log(`Logged in as ${bot.user!.tag}`);
+  try {
+    sendMessage(process.env.DISCORD_CHANNEL_ID_LOGS!, "Bot started");
+  } catch (e) {
+    console.error("Error sending startup message");
+    console.error(e);
+  }
 });
 
 bot.on("messageCreate", async (message) => {
