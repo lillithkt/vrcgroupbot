@@ -1,11 +1,11 @@
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
 import { EmbedBuilder } from "discord.js";
-import { sendMessage } from "discordBot";
 import { config as dotenvConfig } from "dotenv";
 import { Secret, TOTP } from "otpauth";
 import { CookieJar } from "tough-cookie";
 import VRCLog, { LogEventColors, LogEventReadable } from "types/vrclog";
+import { sendMessage } from "./discord/rest";
 dotenvConfig();
 
 const totp = new TOTP({
@@ -17,7 +17,7 @@ const totp = new TOTP({
 
 const jar = new CookieJar();
 
-const client = wrapper(
+export const vrcClient = wrapper(
   axios.create({
     jar,
     baseURL: "https://vrchat.com/api/1",
@@ -29,14 +29,14 @@ const client = wrapper(
 let initalized = false;
 export async function init() {
   if (initalized) return;
-  await client
+  await vrcClient
     .get("/auth/user", {
       headers: {
         Authorization: `Basic ${btoa(`${encodeURIComponent(process.env.VRCHAT_USERNAME!)}:${encodeURIComponent(process.env.VRCHAT_PASSWORD!)}`)}`,
       },
     })
     .catch(() => {});
-  await client
+  await vrcClient
     .post("/auth/twofactorauth/totp/verify", {
       code: totp.generate(),
     })
@@ -50,7 +50,7 @@ export async function getNewLogs(): Promise<VRCLog[]> {
   await init();
   const newLogs: {
     results: VRCLog[];
-  } = await client
+  } = await vrcClient
     .get(
       `/groups/${process.env.VRCHAT_GROUP_ID!}/auditLogs?startDate=${lastFetched}`
     )

@@ -1,5 +1,6 @@
-import { sendMessage } from "discordBot";
 import { getNewLogs, sendNewLogs } from "vrchat";
+import "./discord/bot";
+import { sendMessage } from "./discord/rest";
 
 console.log("Starting up");
 
