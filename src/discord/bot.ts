@@ -23,6 +23,10 @@ bot.on("ready", () => {
 
 bot.on("messageCreate", async (message) => {
   if (message.author.bot) return;
+  if (message.content === `<@${bot.user!.id}>`) {
+    message.reply(`My prefix is \`${process.env.DISCORD_PREFIX!}\``);
+    return;
+  }
   let messageWithoutPrefix: string = message.content;
   if (message.content.startsWith(`<@${bot.user!.id}> `)) {
     messageWithoutPrefix = message.content.slice(`<@${bot.user!.id}> `.length);
