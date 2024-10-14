@@ -23,14 +23,17 @@ bot.on("ready", () => {
 
 bot.on("messageCreate", async (message) => {
   if (message.author.bot) return;
-  if (!message.content.startsWith(process.env.DISCORD_PREFIX!)) return;
+  let messageWithoutPrefix: string = message.content;
+  if (message.content.startsWith(`<@${bot.user!.id}> `)) {
+    messageWithoutPrefix = message.content.slice(`<@${bot.user!.id}> `.length);
+  }
+  if (!messageWithoutPrefix.startsWith(process.env.DISCORD_PREFIX!)) return;
+  messageWithoutPrefix = messageWithoutPrefix.slice(
+    process.env.DISCORD_PREFIX!.length
+  );
   for (const command of commands) {
     for (const name of [command.name, ...command.aliases]) {
-      if (
-        message.content
-          .slice(process.env.DISCORD_PREFIX!.length)
-          .startsWith(name)
-      ) {
+      if (messageWithoutPrefix.startsWith(name)) {
         try {
           if (
             command.ownerOnly &&
@@ -39,11 +42,7 @@ bot.on("messageCreate", async (message) => {
             message.reply("You don't have permission to use this command");
             return;
           }
-          const args = yargs(
-            message.content.slice(
-              name.length + process.env.DISCORD_PREFIX!.length
-            )
-          );
+          const args = yargs(messageWithoutPrefix.slice(name.length));
           await command.run(args, message);
         } catch (e) {
           console.error(e);
