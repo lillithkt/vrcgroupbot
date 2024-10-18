@@ -1,5 +1,5 @@
 import VRCUser from "types/vrcuser";
-import { init, vrcClient } from "vrchat";
+import { getValidGroups, init, vrcClient } from "vrchat";
 import Command from "./";
 
 export default {
@@ -29,12 +29,9 @@ export default {
         message.reply("User not found");
         return;
       }
-      const res = await vrcClient.post(
-        `/groups/${process.env.VRCHAT_GROUP_ID}/bans`,
-        {
-          userId,
-        }
-      );
+      const res = await vrcClient.post(`/groups/${getValidGroups()[0]}/bans`, {
+        userId,
+      });
       if (res.status !== 200) {
         message.reply("An error occurred while banning this user");
         message.reply(res.data);
@@ -81,7 +78,7 @@ export const unban = {
         return;
       }
       const res = await vrcClient.delete(
-        `/groups/${process.env.VRCHAT_GROUP_ID}/bans/${userId}`
+        `/groups/${getValidGroups()[0]}/bans/${userId}`
       );
       if (res.status !== 200) {
         message.reply("An error occurred while unbanning this user");
