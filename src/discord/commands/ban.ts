@@ -29,9 +29,12 @@ export default {
         message.reply("User not found");
         return;
       }
-      const res = await vrcClient.post(`/groups/${getValidGroups()[0]}/bans`, {
-        userId,
-      });
+      const res = await vrcClient.post(
+        `/groups/${getValidGroups()[0].id}/bans`,
+        {
+          userId,
+        }
+      );
       if (res.status !== 200) {
         message.reply("An error occurred while banning this user");
         message.reply(res.data);
@@ -78,7 +81,7 @@ export const unban = {
         return;
       }
       const res = await vrcClient.delete(
-        `/groups/${getValidGroups()[0]}/bans/${userId}`
+        `/groups/${getValidGroups()[0].id}/bans/${userId}`
       );
       if (res.status !== 200) {
         message.reply("An error occurred while unbanning this user");
