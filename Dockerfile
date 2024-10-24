@@ -1,8 +1,5 @@
 FROM node:21.5.0-alpine
 
-RUN apk add --no-cache tzdata
-ENV TZ=America/New_York
-
 ENV NODE_ENV=development
 
 RUN npm install -g pnpm
@@ -18,6 +15,9 @@ RUN pnpm build
 RUN pnpm prune --prod
 
 FROM node:21.5.0-alpine
+
+RUN apk add --no-cache tzdata
+ENV TZ=America/New_York
 
 ENV NODE_ENV=production
 
