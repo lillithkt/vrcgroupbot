@@ -97,28 +97,42 @@ export default new Capability([
           },
         ]);
 
-      if (hasManageMembers) {
-        for (const group of getValidGroups()) {
+      if (hasManageMembers && group) {
+        try {
           const res = await vrcClient.get(
             `/groups/${group.id}/members/${userObjData.id}`
           );
-          if (res.status !== 200) {
-            continue;
+          if (res.status === 200) {
+            const data = res.data as VRCGroupMember;
+            if (data && data.membershipStatus === "member") {
+              embedBuilder = embedBuilder.addFields([
+                {
+                  name: `Member of ${group.name}`,
+                  value:
+                    `Roles: ${data.roleIds.map((i) => group.roles.find((a) => i === a.id)?.name || i).join(", ")}\n` +
+                    (data.joinedAt
+                      ? `Joined: ${new Date(data.joinedAt).toLocaleString()} EST\n`
+                      : "") +
+                    (data.isRepresenting ? "Representing\n" : ""),
+                },
+              ]);
+            } else {
+              embedBuilder = embedBuilder.addFields([
+                {
+                  name: `Not a member of ${group.name}`,
+                  value: "This user is not a member of this group",
+                },
+              ]);
+            }
           }
-          const data = res.data as VRCGroupMember;
-          if (data && data.membershipStatus === "member") {
-            embedBuilder = embedBuilder.addFields([
-              {
-                name: `Member of ${group.name}`,
-                value:
-                  `Roles: ${data.roleIds.map((i) => group.roles.find((a) => i === a.id)?.name || i).join(", ")}\n` +
-                  (data.joinedAt
-                    ? `Joined: ${new Date(data.joinedAt).toLocaleString()} EST\n`
-                    : "") +
-                  (data.isRepresenting ? "Representing\n" : ""),
-              },
-            ]);
-          }
+        } catch (e) {
+          console.error(e);
+          embedBuilder = embedBuilder.addFields([
+            {
+              name: "Error fetching group information",
+              value: `An error occurred while fetching member information for ${group.name}`,
+            },
+          ]);
         }
       }
       await interaction.editReply({ embeds: [embedBuilder.toJSON()] });
