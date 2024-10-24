@@ -106,7 +106,7 @@ export default new Capability([
             continue;
           }
           const data = res.data as VRCGroupMember;
-          if (data.membershipStatus === "member") {
+          if (data && data.membershipStatus === "member") {
             embedBuilder = embedBuilder.addFields([
               {
                 name: `Member of ${group.name}`,
