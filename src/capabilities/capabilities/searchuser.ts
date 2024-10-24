@@ -113,7 +113,7 @@ export default new Capability([
                 value:
                   `Roles: ${data.roleIds.map((i) => group.roles.find((a) => i === a.id)?.name || i).join(", ")}\n` +
                   (data.joinedAt
-                    ? `Joined: ${new Date(data.joinedAt).toLocaleString()}\n`
+                    ? `Joined: ${new Date(data.joinedAt).toLocaleString()} EST\n`
                     : "") +
                   (data.isRepresenting ? "Representing\n" : ""),
               },
