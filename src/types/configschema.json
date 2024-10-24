@@ -1,0 +1,169 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/iConfig",
+    "definitions": {
+        "iConfig": {
+            "type": "object",
+            "properties": {
+                "$schema": {
+                    "type": "string"
+                },
+                "credentials": {
+                    "type": "object",
+                    "properties": {
+                        "vrchat": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "totp": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "username",
+                                "password",
+                                "totp"
+                            ],
+                            "additionalProperties": false
+                        },
+                        "discord": {
+                            "type": "object",
+                            "properties": {
+                                "token": {
+                                    "type": "string"
+                                },
+                                "applicationId": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "token",
+                                "applicationId"
+                            ],
+                            "additionalProperties": false
+                        }
+                    },
+                    "required": [
+                        "vrchat",
+                        "discord"
+                    ],
+                    "additionalProperties": false
+                },
+                "vrchat": {
+                    "type": "object",
+                    "properties": {
+                        "groupIds": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "capabilities": {
+                                        "type": "object",
+                                        "properties": {
+                                            "logs": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "banUnbanKick": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "editGroup": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "manageRoles": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "invite": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "announcement": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "additionalProperties": false
+                                    }
+                                },
+                                "required": [
+                                    "capabilities"
+                                ],
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "required": [
+                        "groupIds"
+                    ],
+                    "additionalProperties": false
+                },
+                "discord": {
+                    "type": "object",
+                    "properties": {
+                        "ownerIds": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "roleNames": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
+                        "prefix": {
+                            "type": "string"
+                        },
+                        "channelIds": {
+                            "type": "object",
+                            "properties": {
+                                "logs": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "logs"
+                            ],
+                            "additionalProperties": false
+                        }
+                    },
+                    "required": [
+                        "ownerIds",
+                        "roleNames",
+                        "prefix",
+                        "channelIds"
+                    ],
+                    "additionalProperties": false
+                }
+            },
+            "required": [
+                "$schema",
+                "credentials",
+                "vrchat",
+                "discord"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

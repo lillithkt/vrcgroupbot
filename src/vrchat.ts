@@ -1,21 +1,20 @@
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
+import config from "config";
 import { EmbedBuilder } from "discord.js";
-import { config as dotenvConfig } from "dotenv";
 import { Secret, TOTP } from "otpauth";
 import { CookieJar } from "tough-cookie";
 import VRCGroup from "types/vrcgroup";
 import VRCLog, { LogEventColors, LogEventReadable } from "types/vrclog";
 import { sendMessage } from "./discord/rest";
-dotenvConfig();
-
-export const groupIds = process.env.VRCHAT_GROUP_IDS!.split(",");
 
 const totp = new TOTP({
   algorithm: "SHA1",
   digits: 6,
   period: 30,
-  secret: Secret.fromBase32(process.env.VRCHAT_TOTP_SECRET!.replace(/ /g, "")),
+  secret: Secret.fromBase32(
+    config.config.credentials.vrchat.totp.replace(/ /g, "")
+  ),
 });
 
 const jar = new CookieJar();
@@ -25,7 +24,7 @@ export const vrcClient = wrapper(
     jar,
     baseURL: "https://vrchat.com/api/1",
     headers: {
-      "User-Agent": "SleepCuddlesBot/1.0.0 (https://github.com/imlvna)",
+      "User-Agent": "VRCDiscordBot/1.0.0 (https://github.com/imlvna)",
     },
   })
 );
@@ -42,7 +41,7 @@ export async function init() {
   await vrcClient
     .get("/auth/user", {
       headers: {
-        Authorization: `Basic ${btoa(`${encodeURIComponent(process.env.VRCHAT_USERNAME!)}:${encodeURIComponent(process.env.VRCHAT_PASSWORD!)}`)}`,
+        Authorization: `Basic ${btoa(`${encodeURIComponent(config.config.credentials.vrchat.username)}:${encodeURIComponent(config.config.credentials.vrchat.password)}`)}`,
       },
     })
     .catch(() => {});
@@ -108,7 +107,7 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
     }
   }
   if (embeds.length === 0) return;
-  await sendMessage(process.env.DISCORD_CHANNEL_ID_LOGS!, {
+  await sendMessage(config.config.discord.channelIds.logs, {
     embeds,
   });
 }

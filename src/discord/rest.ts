@@ -1,7 +1,8 @@
+import config from "config";
 import { APIMessage, MessageCreateOptions, REST, Routes } from "discord.js";
-import { config as dotenvConfig } from "dotenv";
-dotenvConfig();
-const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN!);
+export const rest = new REST({ version: "10" }).setToken(
+  config.config.credentials.discord.token
+);
 
 export async function sendMessage(
   channelId: string,

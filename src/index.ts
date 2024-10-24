@@ -1,14 +1,15 @@
+import config from "config";
+import { login } from "discord/bot";
 import VRCGroup, { VRCGroupPermission } from "types/vrcgroup";
 import {
   getNewLogs,
-  groupIds,
   init,
   sendNewLogs,
   setValidGroups,
   vrcClient,
 } from "vrchat";
+import "./capabilities/list";
 import { REQUIRED_GROUP_PERMISSIONS } from "./constants";
-import "./discord/bot";
 import { sendMessage } from "./discord/rest";
 
 (async () => {
@@ -16,7 +17,7 @@ import { sendMessage } from "./discord/rest";
   await init();
 
   const groups = await Promise.all(
-    groupIds.map(async (i) => {
+    Object.keys(config.config.vrchat.groupIds).map(async (i) => {
       try {
         const data = await vrcClient.get(`/groups/${i}`);
         if (data.status !== 200) {
@@ -28,7 +29,7 @@ import { sendMessage } from "./discord/rest";
         return data.data as VRCGroup;
       } catch (e) {
         await sendMessage(
-          process.env.DISCORD_CHANNEL_ID_LOGS!,
+          config.config.discord.channelIds.logs,
           `Error fetching group ${i}`
         );
         console.error(`Error fetching group ${i}`);
@@ -43,7 +44,7 @@ import { sendMessage } from "./discord/rest";
     }
     if (group.membershipStatus !== "member") {
       sendMessage(
-        process.env.DISCORD_CHANNEL_ID_LOGS!,
+        config.config.discord.channelIds.logs,
         `Bot is not a member of group ${group.name}`
       );
       continue;
@@ -54,7 +55,7 @@ import { sendMessage } from "./discord/rest";
     );
     if (missingPermissions.length > 0) {
       sendMessage(
-        process.env.DISCORD_CHANNEL_ID_LOGS!,
+        config.config.discord.channelIds.logs,
         `Bot is missing permissions in group ${group.name}: ${missingPermissions.join(", ")}`
       );
       continue;
@@ -62,10 +63,11 @@ import { sendMessage } from "./discord/rest";
     validGroups.push(group);
   }
   await sendMessage(
-    process.env.DISCORD_CHANNEL_ID_LOGS!,
+    config.config.discord.channelIds.logs,
     `Listening to the following groups:\n${validGroups.map((group) => `- ${group.name}`).join("\n")}`
   );
   setValidGroups(validGroups);
+  login();
   setInterval(async () => {
     console.log("Checking for new logs");
     try {
@@ -81,18 +83,18 @@ import { sendMessage } from "./discord/rest";
       console.error(e);
       try {
         await sendMessage(
-          process.env.DISCORD_CHANNEL_ID_LOGS!,
+          config.config.discord.channelIds.logs,
           "Error fetching group logs"
         );
         if (e instanceof Error) {
-          await sendMessage(process.env.DISCORD_CHANNEL_ID_LOGS!, e.message);
+          await sendMessage(config.config.discord.channelIds.logs, e.message);
           await sendMessage(
-            process.env.DISCORD_CHANNEL_ID_LOGS!,
+            config.config.discord.channelIds.logs,
             e.stack ?? "no stack provided"
           );
         } else {
           await sendMessage(
-            process.env.DISCORD_CHANNEL_ID_LOGS!,
+            config.config.discord.channelIds.logs,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (e as any).toString()
           );

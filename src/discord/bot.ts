@@ -1,8 +1,8 @@
-import { Client, GatewayIntentBits } from "discord.js";
-import yargs from "yargs-parser";
-import { commands } from "./commands";
-import { sendMessage } from "./rest";
-const bot = new Client({
+import { capabilities } from "capabilities/list";
+import config from "config";
+import { Client, GatewayIntentBits, InteractionType, Routes } from "discord.js";
+import { rest, sendMessage } from "./rest";
+export const bot = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -11,50 +11,67 @@ const bot = new Client({
   ],
 });
 
-bot.on("ready", () => {
+bot.on("ready", async () => {
   console.log(`Logged in as ${bot.user!.tag}`);
   try {
-    sendMessage(process.env.DISCORD_CHANNEL_ID_LOGS!, "Bot started");
+    sendMessage(config.config.discord.channelIds.logs, "Bot started");
   } catch (e) {
     console.error("Error sending startup message");
     console.error(e);
   }
+
+  const appCommandsRes = await rest.put(
+    Routes.applicationCommands(config.config.credentials.discord.applicationId),
+    {
+      body: capabilities.flatMap((cap) =>
+        cap.commands.map((i) => i.builder.toJSON())
+      ),
+    }
+  );
+  if (appCommandsRes instanceof Array) {
+    console.log("Commands registered");
+  }
 });
 
-bot.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
-  if (message.content === `<@${bot.user!.id}>`) {
-    message.reply(`My prefix is \`${process.env.DISCORD_PREFIX!}\``);
-    return;
-  }
-  let messageWithoutPrefix: string = message.content;
-  if (message.content.startsWith(`<@${bot.user!.id}> `)) {
-    messageWithoutPrefix = message.content.slice(`<@${bot.user!.id}> `.length);
-  }
-  if (!messageWithoutPrefix.startsWith(process.env.DISCORD_PREFIX!)) return;
-  messageWithoutPrefix = messageWithoutPrefix.slice(
-    process.env.DISCORD_PREFIX!.length
-  );
-  for (const command of commands) {
-    for (const name of [command.name, ...command.aliases]) {
-      if (messageWithoutPrefix.startsWith(name)) {
-        try {
-          if (
-            command.ownerOnly &&
-            message.author.id !== process.env.DISCORD_OWNER_ID
-          ) {
-            message.reply("You don't have permission to use this command");
-            return;
-          }
-          const args = yargs(messageWithoutPrefix.slice(name.length));
-          await command.run(args, message);
-        } catch (e) {
-          console.error(e);
-          message.reply("An error occurred while executing this command");
+bot.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand() && !interaction.isAutocomplete()) return;
+  for (const cap of capabilities) {
+    const command = cap.commands.find(
+      (i) => i.builder.name === interaction.commandName
+    );
+    if (command) {
+      try {
+        switch (interaction.type) {
+          case InteractionType.ApplicationCommand:
+            if (
+              command.ownerOnly &&
+              !config.config.discord.ownerIds.includes(interaction.user.id)
+            ) {
+              await interaction.reply(
+                "You do not have permission to run this command"
+              );
+              return;
+            }
+            await command.run(interaction);
+            break;
+          case InteractionType.ApplicationCommandAutocomplete:
+            if (!command.autocomplete) {
+              break;
+            }
+            await command.autocomplete(interaction);
+            break;
+        }
+      } catch (e) {
+        console.error(e);
+        if (interaction.isCommand()) {
+          await interaction.reply("An error occurred");
         }
       }
+      return;
     }
   }
 });
 
-bot.login(process.env.DISCORD_TOKEN!);
+export function login() {
+  bot.login(config.config.credentials.discord.token);
+}
