@@ -64,7 +64,9 @@ bot.on("interactionCreate", async (interaction) => {
       } catch (e) {
         console.error(e);
         if (interaction.isCommand()) {
-          await interaction.reply("An error occurred");
+          await (
+            interaction.replied ? interaction.editReply : interaction.reply
+          )("An error occurred");
         }
       }
       return;

@@ -10,4 +10,6 @@ esbuild.build({
   loader: {
     ".node": "copy",
   },
+  // disable direct-eval warning
+  logLevel: "silent",
 });

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
+import { Capabilities } from "capabilities";
 import config from "config";
 import { EmbedBuilder } from "discord.js";
 import { Secret, TOTP } from "otpauth";
@@ -56,30 +57,35 @@ export async function init() {
 
 let lastFetched = new Date().toISOString();
 export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
-  await init();
   return (
     await Promise.all(
-      validGroups.map(async (group) => {
-        const newLogs: {
-          results: VRCLog[];
-        } = await vrcClient
-          .get(`/groups/${group.id}/auditLogs?startDate=${lastFetched}`)
-          .then((res) => res.data)
-          .catch((e) => {
-            console.error(e);
-            console.error(e.response.data);
-          });
-        lastFetched = new Date().toISOString();
-        return [
-          group.id,
-          newLogs.results.sort((i, a) => {
-            return (
-              new Date(i.created_at).getTime() -
-              new Date(a.created_at).getTime()
-            );
-          }),
-        ];
-      })
+      validGroups
+        .filter((i) => {
+          config.config.vrchat.groupIds[i.id].capabilities[
+            Capabilities.Logs
+          ] !== undefined;
+        })
+        .map(async (group) => {
+          const newLogs: {
+            results: VRCLog[];
+          } = await vrcClient
+            .get(`/groups/${group.id}/auditLogs?startDate=${lastFetched}`)
+            .then((res) => res.data)
+            .catch((e) => {
+              console.error(e);
+              console.error(e.response.data);
+            });
+          lastFetched = new Date().toISOString();
+          return [
+            group.id,
+            newLogs.results.sort((i, a) => {
+              return (
+                new Date(i.created_at).getTime() -
+                new Date(a.created_at).getTime()
+              );
+            }),
+          ];
+        })
     )
   ).reduce((acc, i) => {
     acc.set(i[0] as string, i[1] as VRCLog[]);

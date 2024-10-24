@@ -8,6 +8,7 @@ export enum Capabilities {
   ManageRoles = "manageRoles",
   Invite = "invite",
   Announcement = "announcement",
+  ManageMembers = "manageMembers",
 }
 
 export const CapabilityPermissionRequirements: Record<
@@ -27,6 +28,7 @@ export const CapabilityPermissionRequirements: Record<
   ],
   [Capabilities.Invite]: [VRCGroupPermission.ManageInvites],
   [Capabilities.Announcement]: [VRCGroupPermission.ManageAnnouncements],
+  [Capabilities.ManageMembers]: [VRCGroupPermission.ManageMembers],
 };
 
 export default class Capability {

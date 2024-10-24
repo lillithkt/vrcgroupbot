@@ -1,3 +1,4 @@
+import { CapabilityPermissionRequirements } from "capabilities";
 import config from "config";
 import { login } from "discord/bot";
 import VRCGroup, { VRCGroupPermission } from "types/vrcgroup";
@@ -9,7 +10,6 @@ import {
   vrcClient,
 } from "vrchat";
 import "./capabilities/list";
-import { REQUIRED_GROUP_PERMISSIONS } from "./constants";
 import { sendMessage } from "./discord/rest";
 
 (async () => {
@@ -19,7 +19,7 @@ import { sendMessage } from "./discord/rest";
   const groups = await Promise.all(
     Object.keys(config.config.vrchat.groupIds).map(async (i) => {
       try {
-        const data = await vrcClient.get(`/groups/${i}`);
+        const data = await vrcClient.get(`/groups/${i}?includeRoles=true`);
         if (data.status !== 200) {
           throw new Error(`Error fetching group ${i}`);
         }
@@ -49,7 +49,18 @@ import { sendMessage } from "./discord/rest";
       );
       continue;
     }
-    const missingPermissions = REQUIRED_GROUP_PERMISSIONS.filter(
+    const enabledCapabilities = Object.keys(
+      config.config.vrchat.groupIds[group.id].capabilities
+    );
+    const requiredPerms = enabledCapabilities
+      .map(
+        (capability) =>
+          CapabilityPermissionRequirements[
+            capability as keyof typeof CapabilityPermissionRequirements
+          ]
+      )
+      .flat();
+    const missingPermissions = requiredPerms.filter(
       (permission: VRCGroupPermission) =>
         !group.myMember.permissions.includes(permission)
     );
@@ -69,14 +80,8 @@ import { sendMessage } from "./discord/rest";
   setValidGroups(validGroups);
   login();
   setInterval(async () => {
-    console.log("Checking for new logs");
     try {
       const logs = await getNewLogs();
-      const newLogs = Array.from(logs.values()).reduce(
-        (acc, i) => acc + i.length,
-        0
-      );
-      console.log(`Found ${newLogs} new logs`);
       await sendNewLogs(logs);
     } catch (e) {
       console.error("Error fetching group logs");

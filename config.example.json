@@ -20,7 +20,8 @@
           "editGroup": ["roleName"],
           "invite": ["roleName"],
           "manageRoles": ["roleName"],
-          "announcement": ["roleName"]
+          "announcement": ["roleName"],
+          "manageMembers": ["roleName"]
         }
       }
     }

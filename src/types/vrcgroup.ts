@@ -5,6 +5,35 @@ export default interface VRCGroup {
   myMember: {
     permissions: VRCGroupPermission[];
   };
+  roles: VRCGroupRole[];
+}
+export interface VRCGroupRole {
+  id: string;
+  groupId: string;
+  name: string;
+  description: string;
+  isSelfAssignable: boolean;
+  permissions: VRCGroupPermission[];
+  isManagementRole: boolean;
+  requiresTwoFactor: boolean;
+  requiresPurchase: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VRCGroupMember {
+  id: string;
+  groupId: string;
+  userId: string;
+  isRepresenting: boolean;
+  roleIds: string[];
+  mRoleIds: string[];
+  joinedAt: string;
+  membershipStatus: "member" | "inactive";
+  subscribedToAnnouncements: boolean;
+  bannedAt: string | null;
+  managerNotes: string | null;
 }
 /**       "group-announcement-manage",
       "group-audit-view",
