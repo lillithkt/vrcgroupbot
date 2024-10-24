@@ -107,7 +107,10 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
     }
   }
   if (embeds.length === 0) return;
-  await sendMessage(config.config.discord.channelIds.logs, {
-    embeds,
-  });
+  // chunk the embeds into 10
+  for (let i = 0; i < embeds.length; i += 10) {
+    await sendMessage(config.config.discord.channelIds.logs, {
+      embeds: embeds.slice(i, i + 10),
+    });
+  }
 }
