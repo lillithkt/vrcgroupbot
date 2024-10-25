@@ -121,6 +121,6 @@ export default new Capability(
     ),
   ],
   async () => {
-    setInterval(updateLogs, 1000 * 30);
+    setInterval(updateLogs, 1000 * 60 * 2.5);
   }
 );
