@@ -33,7 +33,11 @@ export const CapabilityPermissionRequirements: Record<
 
 export default class Capability {
   public commands: SlashCommand[];
-  constructor(commands: SlashCommand[]) {
+  constructor(
+    commands: SlashCommand[],
+    init: () => Promise<unknown> = async () => {}
+  ) {
     this.commands = commands;
+    init();
   }
 }

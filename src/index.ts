@@ -2,13 +2,7 @@ import { CapabilityPermissionRequirements } from "capabilities";
 import config from "config";
 import { login } from "discord/bot";
 import VRCGroup, { VRCGroupPermission } from "types/vrcgroup";
-import {
-  getNewLogs,
-  init,
-  sendNewLogs,
-  setValidGroups,
-  vrcClient,
-} from "vrchat";
+import { init, setValidGroups, vrcClient } from "vrchat";
 import "./capabilities/list";
 import { sendMessage } from "./discord/rest";
 
@@ -79,37 +73,5 @@ import { sendMessage } from "./discord/rest";
   );
   setValidGroups(validGroups);
   login();
-  setInterval(async () => {
-    try {
-      const logs = await getNewLogs();
-      await sendNewLogs(logs);
-    } catch (e) {
-      console.error("Error fetching group logs");
-      console.error(e);
-      try {
-        await sendMessage(
-          config.config.discord.channelIds.logs,
-          "Error fetching group logs"
-        );
-        if (e instanceof Error) {
-          await sendMessage(config.config.discord.channelIds.logs, e.message);
-          await sendMessage(
-            config.config.discord.channelIds.logs,
-            e.stack ?? "no stack provided"
-          );
-        } else {
-          await sendMessage(
-            config.config.discord.channelIds.logs,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (e as any).toString()
-          );
-        }
-      } catch (e) {
-        console.error("Error sending error message");
-        console.error(e);
-      }
-    }
-  }, 1000 * 30);
-
   console.log("Started");
 })();
