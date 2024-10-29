@@ -119,6 +119,29 @@ export default new Capability(
         await interaction.editReply("Fetched logs");
       }
     ),
+    new SlashCommand(
+      () =>
+        new SlashCommandBuilder()
+          .setName("setlastlogfetch")
+          .setDescription(
+            "[Owner Only] Set the time that logs were last fetched, to backfill"
+          )
+          .addStringOption((option) =>
+            option
+              .setName("date")
+              .setDescription("The date to set")
+              .setRequired(true)
+          ),
+      async (interaction) => {
+        const date = new Date(interaction.options.get("date")?.value as string);
+        if (isNaN(date.getTime())) {
+          await interaction.reply("Invalid date");
+          return;
+        }
+        lastFetched = date.toISOString();
+        await interaction.reply("Set last fetched date to " + lastFetched);
+      }
+    ),
   ],
   async () => {
     setInterval(updateLogs, 1000 * 60 * 2.5);

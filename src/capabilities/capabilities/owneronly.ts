@@ -10,7 +10,7 @@ export default new Capability([
     () =>
       new SlashCommandBuilder()
         .setName("reloadconfig")
-        .setDescription("Reload the configuration"),
+        .setDescription("[Owner Only] Reload the configuration"),
     async (interaction) => {
       reloadConfig();
       await interaction.reply("Configuration reloaded");
@@ -22,7 +22,7 @@ export default new Capability([
     () =>
       new SlashCommandBuilder()
         .setName("eval")
-        .setDescription("Run Code")
+        .setDescription("[Owner Only] Run Code")
         .addStringOption((option) =>
           option
             .setName("code")
