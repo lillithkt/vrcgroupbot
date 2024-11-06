@@ -19,7 +19,7 @@ const jar = new CookieJar();
 export const vrcClient = wrapper(
   axios.create({
     jar,
-    baseURL: "https://vrchat.com/api/1",
+    baseURL: "https://api.vrchat.cloud/api/1",
     headers: {
       "User-Agent": "VRCDiscordBot/1.0.0 (https://github.com/imlvna)",
     },
