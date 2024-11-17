@@ -26,7 +26,8 @@ import { sendMessage } from "./discord/rest";
           config.config.discord.channelIds.logs,
           `Error fetching group ${i}`
         );
-        console.error(`Error fetching group ${i}`);
+        const group = config.config.vrchat.groupIds[i];
+        console.error(`Error fetching group ${group.groupName ? `${group.groupName} (${i})` : i}`);
         console.error(e);
       }
     })

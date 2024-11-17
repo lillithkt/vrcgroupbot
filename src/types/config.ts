@@ -18,6 +18,7 @@ export default interface iConfig {
     groupIds: Record<
       string,
       {
+        groupName: string | undefined;
         capabilities: {
           [key in Capabilities]?: string[];
         };
