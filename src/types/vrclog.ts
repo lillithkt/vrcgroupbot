@@ -13,6 +13,7 @@ export default interface VRCLog {
 export enum LogEvent {
   MemberLeave = "group.member.leave",
   MemberJoin = "group.member.join",
+  RequestJoin = "group.request.create",
   InstanceKick = "group.instance.kick",
   InstanceWarn = "group.instance.warn",
   Ban = "group.user.ban",
@@ -34,6 +35,7 @@ export enum LogEvent {
 export const LogEventReadable = {
   [LogEvent.MemberLeave]: "Member Leave",
   [LogEvent.MemberJoin]: "Member Join",
+  [LogEvent.RequestJoin]: "Request To Join Join",
   [LogEvent.InstanceKick]: "Instance Kick",
   [LogEvent.InstanceWarn]: "Instance Warn",
   [LogEvent.Ban]: "Ban",
@@ -55,6 +57,7 @@ export const LogEventReadable = {
 export const LogEventColors = {
   [LogEvent.MemberLeave]: 0xff0000,
   [LogEvent.MemberJoin]: 0x00ff00,
+  [LogEvent.RequestJoin]: 0x00ff00,
   [LogEvent.InstanceKick]: 0xff0000,
   [LogEvent.InstanceWarn]: 0xffff00,
   [LogEvent.Ban]: 0xff0000,
