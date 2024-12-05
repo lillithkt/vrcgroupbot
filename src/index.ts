@@ -6,6 +6,17 @@ import { init, setValidGroups, vrcClient } from "vrchat";
 import "./capabilities/list";
 import { sendMessage } from "./discord/rest";
 
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  sendMessage(config.config.discord.channelIds.logs, `Unhandled Rejection at: ${promise} reason: ${reason}`);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  sendMessage(config.config.discord.channelIds.logs, `Uncaught Exception: ${err}`);
+});
+
 (async () => {
   console.log("Starting up");
   await init();
