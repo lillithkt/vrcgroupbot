@@ -1,7 +1,8 @@
-import { reloadConfig } from "config";
+import config, { reloadConfig } from "config";
 import { SlashCommandBuilder } from "discord.js";
 import { bot } from "discord/bot";
 import SlashCommand from "discord/commands";
+import { sendMessage } from "discord/rest";
 import { vrcClient } from "vrchat";
 import Capability from "../";
 
@@ -69,12 +70,21 @@ export default new Capability([
         );
         if (!result) {
           await interaction.editReply("No result");
+          await sendMessage(config.config.discord.channelIds.logs, {
+            content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\`\nresult: No result`,
+          })
           return;
         }
         await interaction.editReply(result.toString());
+        await sendMessage(config.config.discord.channelIds.logs, {
+          content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\`\nresult: \`${result.toString()}\``,
+        })
       } catch (e) {
         console.error(e);
         await interaction.editReply((e as Error).toString());
+        await sendMessage(config.config.discord.channelIds.logs, {
+          content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\`\nresult: \`${(e as Error).toString()}\``,
+        })
       }
     },
     undefined,
