@@ -1,5 +1,5 @@
 import config, { reloadConfig } from "config";
-import { SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder, TextBasedChannel } from "discord.js";
 import { bot } from "discord/bot";
 import SlashCommand from "discord/commands";
 import { sendMessage } from "discord/rest";
@@ -63,6 +63,11 @@ export default new Capability([
         ),
     async (interaction) => {
       await interaction.deferReply({ ephemeral: true });
+      const logMessageApi = await sendMessage(config.config.discord.channelIds.logs, {
+        content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\``,
+      })
+      const logMessageChannel = await bot.channels.fetch(config.config.discord.channelIds.logs) as TextBasedChannel;
+      const logMessage = await logMessageChannel.messages.fetch(logMessageApi.id);
       try {
         bot && vrcClient;
         const result = await eval(
@@ -70,21 +75,21 @@ export default new Capability([
         );
         if (!result) {
           await interaction.editReply("No result");
-          await sendMessage(config.config.discord.channelIds.logs, {
-            content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\`\nresult: No result`,
-          })
+          await logMessage.edit({
+            content: logMessage.content + "\nNo result",
+          });
           return;
         }
         await interaction.editReply(result.toString());
-        await sendMessage(config.config.discord.channelIds.logs, {
-          content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\`\nresult: \`${result.toString()}\``,
-        })
+        await logMessage.edit({
+          content: logMessage.content + `\nResult: \`${result.toString()}\``,
+        });
       } catch (e) {
         console.error(e);
         await interaction.editReply((e as Error).toString());
-        await sendMessage(config.config.discord.channelIds.logs, {
-          content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\`\nresult: \`${(e as Error).toString()}\``,
-        })
+        await logMessage.edit({
+          content: logMessage.content + `\nError: \`${(e as Error).toString()}\``,
+        });
       }
     },
     undefined,
