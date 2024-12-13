@@ -5,9 +5,10 @@ export default interface iConfig {
   $schema: string;
   credentials: {
     vrchat: {
-      username: string;
-      password: string;
-      totp: string;
+      username?: string;
+      password?: string;
+      totp?: string;
+      authproxy?: string;
     };
     discord: {
       token: string;

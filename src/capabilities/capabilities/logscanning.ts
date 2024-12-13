@@ -124,7 +124,7 @@ export default new Capability(
         new SlashCommandBuilder()
           .setName("setlastlogfetch")
           .setDescription(
-            "[Owner Only] Set the time that logs were last fetched, to backfill"
+            "Set the time that logs were last fetched, to backfill"
           )
           .addStringOption((option) =>
             option

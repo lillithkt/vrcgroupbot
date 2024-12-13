@@ -22,13 +22,11 @@
                                 },
                                 "totp": {
                                     "type": "string"
+                                },
+                                "authproxy": {
+                                    "type": "string"
                                 }
                             },
-                            "required": [
-                                "username",
-                                "password",
-                                "totp"
-                            ],
                             "additionalProperties": false
                         },
                         "discord": {

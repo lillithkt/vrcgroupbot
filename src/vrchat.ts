@@ -5,21 +5,14 @@ import { Secret, TOTP } from "otpauth";
 import { CookieJar } from "tough-cookie";
 import VRCGroup from "types/vrcgroup";
 
-const totp = new TOTP({
-  algorithm: "SHA1",
-  digits: 6,
-  period: 30,
-  secret: Secret.fromBase32(
-    config.config.credentials.vrchat.totp.replace(/ /g, "")
-  ),
-});
+
 
 const jar = new CookieJar();
 
 export const vrcClient = wrapper(
   axios.create({
     jar,
-    baseURL: "https://api.vrchat.cloud/api/1",
+    baseURL: config.config.credentials.vrchat.authproxy ? `${config.config.credentials.vrchat.authproxy}/api/1` : "https://api.vrchat.cloud/api/1",
     headers: {
       "User-Agent": "VRCDiscordBot/1.0.0 (https://github.com/imlvna)",
     },
@@ -35,6 +28,14 @@ export function getValidGroups() {
 let initalized = false;
 export async function init() {
   if (initalized) return;
+  if (config.config.credentials.vrchat.authproxy) {
+    initalized = true;
+    return;
+  }
+  if (!config.config.credentials.vrchat.username || !config.config.credentials.vrchat.password || !config.config.credentials.vrchat.totp) {
+    console.error("No VRChat credentials provided");
+    return;
+  }
   await vrcClient
     .get("/auth/user", {
       headers: {
@@ -44,7 +45,14 @@ export async function init() {
     .catch(() => {});
   await vrcClient
     .post("/auth/twofactorauth/totp/verify", {
-      code: totp.generate(),
+      code: (new TOTP({
+        algorithm: "SHA1",
+        digits: 6,
+        period: 30,
+        secret: Secret.fromBase32(
+          config.config.credentials.vrchat.totp.replace(/ /g, "")
+        ),
+      })).generate(),
     })
     .catch(() => {});
   initalized = true;

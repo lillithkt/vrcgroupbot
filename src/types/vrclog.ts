@@ -36,7 +36,7 @@ export enum LogEvent {
   GroupTransferAccept = "group.transfer.accept",
 }
 
-export const LogEventReadable = {
+export const LogEventReadable: Record<LogEvent, string> = {
   [LogEvent.MemberLeave]: "Member Leave",
   [LogEvent.MemberJoin]: "Member Join",
   [LogEvent.RequestJoin]: "Request To Join",
@@ -58,9 +58,11 @@ export const LogEventReadable = {
   [LogEvent.GroupUpdate]: "Group Update",
   [LogEvent.Unban]: "Unban",
   [LogEvent.MemberUserUpdate]: "User Update",
+  [LogEvent.GroupTransferStart]: "Group Transfer Start",
+  [LogEvent.GroupTransferAccept]: "Group Transfer Accept",
 };
 
-export const LogEventColors = {
+export const LogEventColors: Record<LogEvent, number> = {
   [LogEvent.MemberLeave]: 0xff0000,
   [LogEvent.MemberJoin]: 0x00ff00,
   [LogEvent.RequestJoin]: 0x00ff00,
@@ -81,4 +83,7 @@ export const LogEventColors = {
   [LogEvent.GroupUpdate]: 0x00ff00,
   [LogEvent.Unban]: 0x00ff00,
   [LogEvent.MemberUserUpdate]: 0x00ff00,
+  [LogEvent.RequestReject]: 0xff0000,
+  [LogEvent.GroupTransferStart]: 0x00ff00,
+  [LogEvent.GroupTransferAccept]: 0x00ff00,
 };
