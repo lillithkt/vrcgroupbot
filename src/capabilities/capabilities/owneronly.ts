@@ -49,4 +49,35 @@ export default new Capability([
     undefined,
     true
   ),
+  new SlashCommand(
+    () =>
+      new SlashCommandBuilder()
+        .setName("eeval")
+        .setDescription("[Owner Only] Run Code (Ephemeral)")
+        .addStringOption((option) =>
+          option
+            .setName("code")
+            .setDescription("The code to run")
+            .setRequired(true)
+        ),
+    async (interaction) => {
+      await interaction.deferReply({ ephemeral: true });
+      try {
+        bot && vrcClient;
+        const result = await eval(
+          `(async () => {${interaction.options.get("code")?.value as string}})()`
+        );
+        if (!result) {
+          await interaction.editReply("No result");
+          return;
+        }
+        await interaction.editReply(result.toString());
+      } catch (e) {
+        console.error(e);
+        await interaction.editReply((e as Error).toString());
+      }
+    },
+    undefined,
+    true
+  ),
 ]);
