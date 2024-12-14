@@ -75,7 +75,7 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
             },
             {
               name: "Content",
-              value: (log.data as any).content,
+              value: (log.data as any).text,
             },
             {
               name: "Visibility",
