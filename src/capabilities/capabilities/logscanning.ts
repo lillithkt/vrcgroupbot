@@ -3,7 +3,7 @@ import config from "config";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import SlashCommand from "discord/commands";
 import { sendMessage } from "discord/rest";
-import VRCLog, { LogEventColors, LogEventReadable } from "types/vrclog";
+import VRCLog, { LogEvent, LogEventColors, LogEventReadable } from "types/vrclog";
 import { getValidGroups, vrcClient } from "vrchat";
 
 let lastFetched = new Date().toISOString();
@@ -61,6 +61,33 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
         embed.setFooter({
           text: `Target: ${log.targetId}`,
         });
+      }
+      switch (log.eventType) {
+        case LogEvent.PostCreate: {
+          embed.addFields([
+            {
+              name: "Title",
+              value: (log.data as any).title,
+            },
+            {
+              name: "Content",
+              value: (log.data as any).content,
+            },
+            {
+              name: "Visibility",
+              value: (log.data as any).visibility,
+            }
+          ])
+          if ((log.data as any).imageId) {
+            const fileInfo = await vrcClient.get(`/file/${(log.data as any).imageId}`).then((res) => res.data);
+            const latestVersion = (fileInfo.data as {
+              versions: {
+                version: number;
+              }[]
+            }).versions.sort((a, b) => b.version - a.version)[0];
+            embed.setThumbnail(`https://api.vrchat.cloud/api/1/file/${(log.data as any).imageId}/${latestVersion.version}`);
+          }
+        }
       }
       embeds.push(embed);
     }
