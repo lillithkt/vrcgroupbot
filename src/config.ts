@@ -3,11 +3,13 @@ import iConfig from "types/config";
 
 class configInit {
   public config!: iConfig;
+  public stateDirectory = "state";
   public load() {
     if (existsSync("config.json")) {
-      this.config = JSON.parse(readFileSync("config.json", "utf8"));
-    } else if (existsSync("/config.json")) {
-      this.config = JSON.parse(readFileSync("/config.json", "utf8"));
+      this.config = JSON.parse(readFileSync("state/config.json", "utf8"));
+    } else if (existsSync("/state/config.json")) {
+      this.config = JSON.parse(readFileSync("/state/config.json", "utf8"));
+      this.stateDirectory = "/state";
     } else {
       console.error("No configuration file found.");
       process.exit(1);

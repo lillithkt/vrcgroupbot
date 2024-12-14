@@ -3,10 +3,20 @@ import config from "config";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import SlashCommand from "discord/commands";
 import { sendMessage } from "discord/rest";
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import { join } from "path";
 import VRCLog, { LogEvent, LogEventColors, LogEventReadable } from "types/vrclog";
 import { getValidGroups, vrcClient } from "vrchat";
 
 let lastFetched = new Date().toISOString();
+if (existsSync(join(config.stateDirectory, "lastFetched"))) {
+  lastFetched = readFileSync(join(config.stateDirectory, "lastFetched"), "utf8");
+  sendMessage(config.config.discord.channelIds.logs, "Restored last fetched date: " + lastFetched);
+}
+process.on("exit", () => {
+  console.log("Saving last fetched date");
+  writeFileSync(join(config.stateDirectory, "lastFetched"), lastFetched);
+});
 export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
   return (
     await Promise.all(
