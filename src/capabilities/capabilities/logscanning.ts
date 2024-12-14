@@ -16,6 +16,7 @@ if (existsSync(join(config.stateDirectory, "lastFetched"))) {
 process.on("SIGTERM", () => {
   console.log("Saving last fetched date");
   writeFileSync(join(config.stateDirectory, "lastFetched"), lastFetched);
+  process.exit(0);
 });
 export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
   return (
