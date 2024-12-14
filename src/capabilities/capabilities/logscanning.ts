@@ -13,7 +13,7 @@ if (existsSync(join(config.stateDirectory, "lastFetched"))) {
   lastFetched = readFileSync(join(config.stateDirectory, "lastFetched"), "utf8");
   sendMessage(config.config.discord.channelIds.logs, "Restored last fetched date: " + lastFetched);
 }
-process.on("exit", () => {
+process.on("SIGINT", () => {
   console.log("Saving last fetched date");
   writeFileSync(join(config.stateDirectory, "lastFetched"), lastFetched);
 });
