@@ -59,7 +59,11 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
         .setDescription(log.description);
       if (log.targetId) {
         embed.setFooter({
-          text: `Target: ${log.targetId}`,
+          text: `Target: ${log.targetId}; Created at: ${log.created_at}`,
+        });
+      } else {
+        embed.setFooter({
+          text: `Created at: ${log.created_at}`,
         });
       }
       switch (log.eventType) {
