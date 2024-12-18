@@ -5,7 +5,7 @@ class configInit {
   public config!: iConfig;
   public stateDirectory = "state";
   public load() {
-    if (existsSync("config.json")) {
+    if (existsSync("state/config.json")) {
       this.config = JSON.parse(readFileSync("state/config.json", "utf8"));
     } else if (existsSync("/state/config.json")) {
       this.config = JSON.parse(readFileSync("/state/config.json", "utf8"));
