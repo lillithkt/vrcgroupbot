@@ -1,8 +1,14 @@
-const { execSync } = require("child_process");
+const { execSync, exec } = require("child_process");
 while (true) {
     console.log("Starting the bot...")
     // run /dist/index.js and check exit code
-    const code = execSync("node index.js", { stdio: "inherit" }).status;
+    let code = undefined;
+    try {
+    const process = execSync("node dist/index.js", { stdio: "inherit" });
+    code = process.status;
+    } catch (e) {
+        code = e.status;
+    }
     console.log(`Bot exited with code ${code}`);
     if (code === 42) {
         console.log("Restarting the bot...");
