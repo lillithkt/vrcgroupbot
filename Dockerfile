@@ -27,4 +27,4 @@ COPY --from=0 /src/package.json /src/pnpm-lock.yaml ./
 COPY --from=0 /src/node_modules ./node_modules
 COPY --from=0 /src/dist/* ./
 
-CMD ["docker-entrypoint.sh"]
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
