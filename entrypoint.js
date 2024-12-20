@@ -4,7 +4,7 @@ while (true) {
     // run /dist/index.js and check exit code
     let code = undefined;
     try {
-    const process = execSync("node dist/index.js", { stdio: "inherit" });
+    const process = execSync("node index.js", { stdio: "inherit" });
     code = process.status;
     } catch (e) {
         code = e.status;
