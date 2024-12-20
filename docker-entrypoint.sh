@@ -3,7 +3,7 @@ set -e
 
 EXIT_CODE=0
 while true; do
-    node .
+    node /dist/index.js
     EXIT_CODE=$?
     if [ $EXIT_CODE -ne 42 ]; then
         exit $EXIT_CODE
