@@ -35,6 +35,21 @@ export default new Capability([
   new SlashCommand(
     () =>
       new SlashCommandBuilder()
+        .setName("restart")
+        .setDescription("[Owner Only] Restart the bot"),
+    async (interaction) => {
+      await interaction.reply("Restarting...");
+      await sendMessage(data.config.discord.channelIds.logs, {
+        content: "Restarting...",
+      });
+      await shutdown(true);
+    },
+    undefined,
+    true
+  ),
+  new SlashCommand(
+    () =>
+      new SlashCommandBuilder()
         .setName("eval")
         .setDescription("[Owner Only] Run Code")
         .addStringOption((option) =>
