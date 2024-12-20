@@ -5,6 +5,7 @@ import VRCGroup, { VRCGroupPermission } from "types/vrcgroup";
 import { init, setValidGroups, vrcClient } from "vrchat";
 import "./capabilities/list";
 import { sendMessage } from "./discord/rest";
+import "./hooks";
 
 
 process.on("unhandledRejection", (reason, promise) => {

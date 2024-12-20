@@ -4,6 +4,7 @@ import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import SlashCommand from "discord/commands";
 import { sendMessage } from "discord/rest";
 import { existsSync, readFileSync, writeFileSync } from "fs";
+import { addShutdownHook } from "hooks";
 import { join } from "path";
 import VRCLog, { LogEvent, LogEventColors, LogEventReadable } from "types/vrclog";
 import { getValidGroups, vrcClient } from "vrchat";
@@ -13,7 +14,7 @@ if (existsSync(join(config.stateDirectory, "lastFetched"))) {
   lastFetched = readFileSync(join(config.stateDirectory, "lastFetched"), "utf8");
   sendMessage(config.config.discord.channelIds.logs, "Restored last fetched date: " + lastFetched);
 }
-process.on("SIGTERM", () => {
+addShutdownHook(() => {
   console.log("Saving last fetched date");
   writeFileSync(join(config.stateDirectory, "lastFetched"), lastFetched);
   process.exit(0);

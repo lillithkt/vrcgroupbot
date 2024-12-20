@@ -3,10 +3,36 @@ import { SlashCommandBuilder, TextBasedChannel } from "discord.js";
 import { bot } from "discord/bot";
 import SlashCommand from "discord/commands";
 import { sendMessage } from "discord/rest";
+import { shutdown } from "hooks";
 import { vrcClient } from "vrchat";
 import Capability from "../";
 
 export default new Capability([
+  new SlashCommand(
+    () =>
+      new SlashCommandBuilder()
+        .setName("reloadconfig")
+        .setDescription("[Owner Only] Reload the configuration"),
+    async (interaction) => {
+      reloadConfig();
+      await interaction.reply("Configuration reloaded");
+    },
+    undefined,
+    true
+  ),
+  new SlashCommand(
+    () =>
+      new SlashCommandBuilder()
+        .setName("shutdown")
+        .setDescription("[Owner Only] Shut down the bot"),
+    async (interaction) => {
+      reloadConfig();
+      await interaction.reply("Shutting down");
+      await shutdown();
+    },
+    undefined,
+    true
+  ),
   new SlashCommand(
     () =>
       new SlashCommandBuilder()
