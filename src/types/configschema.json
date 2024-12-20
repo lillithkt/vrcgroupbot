@@ -127,6 +127,34 @@
                 "logScanningInterval": {
                     "type": "number"
                 },
+                "linking": {
+                    "type": "object",
+                    "properties": {
+                        "linkOnJoin": {
+                            "type": "boolean"
+                        },
+                        "roles": {
+                            "type": "object",
+                            "properties": {
+                                "linked": {
+                                    "type": "string"
+                                },
+                                "over18": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "linked"
+                            ],
+                            "additionalProperties": false
+                        }
+                    },
+                    "required": [
+                        "linkOnJoin",
+                        "roles"
+                    ],
+                    "additionalProperties": false
+                },
                 "discord": {
                     "type": "object",
                     "properties": {

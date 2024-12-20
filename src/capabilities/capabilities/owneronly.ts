@@ -1,4 +1,4 @@
-import config, { reloadConfig } from "config";
+import data, { reloadConfig } from "data";
 import { SlashCommandBuilder, TextBasedChannel } from "discord.js";
 import { bot } from "discord/bot";
 import SlashCommand from "discord/commands";
@@ -76,10 +76,10 @@ export default new Capability([
         ),
     async (interaction) => {
       await interaction.deferReply({ ephemeral: true });
-      const logMessageApi = await sendMessage(config.config.discord.channelIds.logs, {
+      const logMessageApi = await sendMessage(data.config.discord.channelIds.logs, {
         content: `Ephemeral Eval by ${interaction.user.username}\ncode: \`${interaction.options.get("code")?.value as string}\``,
       })
-      const logMessageChannel = await bot.channels.fetch(config.config.discord.channelIds.logs) as TextBasedChannel;
+      const logMessageChannel = await bot.channels.fetch(data.config.discord.channelIds.logs) as TextBasedChannel;
       const logMessage = await logMessageChannel.messages.fetch(logMessageApi.id);
       try {
         bot && vrcClient;

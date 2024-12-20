@@ -1,5 +1,5 @@
 import { Capabilities } from "capabilities";
-import config from "config";
+import data from "data";
 import { GuildMemberRoleManager } from "discord.js";
 import VRCGroup from "types/vrcgroup";
 
@@ -9,7 +9,7 @@ export function checkCapability(
   capability: Capabilities
 ) {
   const _roleNames =
-    config.config.vrchat.groupIds[group.id].capabilities[capability];
+    data.config.vrchat.groupIds[group.id].capabilities[capability];
   const roleNames = _roleNames as string[] | undefined;
   if (!roleNames) {
     return false;
@@ -23,5 +23,5 @@ export function checkCapability(
 }
 
 export const roleNameToId = (roleName: string) => {
-  return config.config.discord.roleNames[roleName];
+  return data.config.discord.roleNames[roleName];
 };

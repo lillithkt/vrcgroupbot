@@ -10,6 +10,7 @@ esbuild.build({
   loader: {
     ".node": "copy",
   },
+  external: ["sqlite3"],
   // disable direct-eval warning
   logLevel: "silent",
 });

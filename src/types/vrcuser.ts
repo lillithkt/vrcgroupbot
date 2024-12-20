@@ -8,8 +8,10 @@ export default interface VRCUser {
   profilePicOverride: string | null;
   profilePicOverrideThumbnail: string | null;
   status: string;
+  statusDescription: string;
   userIcon: string | null;
   last_platform: LastPlatform;
+  ageVerificationStatus: string;
 }
 
 export enum LastPlatform {

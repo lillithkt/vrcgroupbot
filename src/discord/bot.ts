@@ -1,5 +1,5 @@
 import { capabilities } from "capabilities/list";
-import config from "config";
+import data from "data";
 import { Client, GatewayIntentBits, InteractionType, Routes } from "discord.js";
 import { rest, sendMessage } from "./rest";
 export const bot = new Client({
@@ -14,14 +14,14 @@ export const bot = new Client({
 bot.on("ready", async () => {
   console.log(`Logged in as ${bot.user!.tag}`);
   try {
-    sendMessage(config.config.discord.channelIds.logs, "Bot started");
+    sendMessage(data.config.discord.channelIds.logs, "Bot started");
   } catch (e) {
     console.error("Error sending startup message");
     console.error(e);
   }
 
   const appCommandsRes = await rest.put(
-    Routes.applicationCommands(config.config.credentials.discord.applicationId),
+    Routes.applicationCommands(data.config.credentials.discord.applicationId),
     {
       body: capabilities.flatMap((cap) =>
         cap.commands.map((i) => i.builder.toJSON())
@@ -45,7 +45,7 @@ bot.on("interactionCreate", async (interaction) => {
           case InteractionType.ApplicationCommand:
             if (
               command.ownerOnly &&
-              !config.config.discord.ownerIds.includes(interaction.user.id)
+              !data.config.discord.ownerIds.includes(interaction.user.id)
             ) {
               await interaction.reply(
                 "You do not have permission to run this command"
@@ -75,5 +75,5 @@ bot.on("interactionCreate", async (interaction) => {
 });
 
 export function login() {
-  bot.login(config.config.credentials.discord.token);
+  bot.login(data.config.credentials.discord.token);
 }

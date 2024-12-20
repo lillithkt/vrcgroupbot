@@ -1,6 +1,6 @@
 import axios from "axios";
 import { wrapper } from "axios-cookiejar-support";
-import config from "config";
+import data from "data";
 import { Secret, TOTP } from "otpauth";
 import { CookieJar } from "tough-cookie";
 import VRCGroup from "types/vrcgroup";
@@ -12,7 +12,7 @@ const jar = new CookieJar();
 export const vrcClient = wrapper(
   axios.create({
     jar,
-    baseURL: config.config.credentials.vrchat.authproxy ? `${config.config.credentials.vrchat.authproxy}/api/1` : "https://api.vrchat.cloud/api/1",
+    baseURL: data.config.credentials.vrchat.authproxy ? `${data.config.credentials.vrchat.authproxy}/api/1` : "https://api.vrchat.cloud/api/1",
     headers: {
       "User-Agent": "VRCDiscordBot/1.0.0 (https://github.com/imlvna)",
     },
@@ -28,18 +28,18 @@ export function getValidGroups() {
 let initalized = false;
 export async function init() {
   if (initalized) return;
-  if (config.config.credentials.vrchat.authproxy) {
+  if (data.config.credentials.vrchat.authproxy) {
     initalized = true;
     return;
   }
-  if (!config.config.credentials.vrchat.username || !config.config.credentials.vrchat.password || !config.config.credentials.vrchat.totp) {
+  if (!data.config.credentials.vrchat.username || !data.config.credentials.vrchat.password || !data.config.credentials.vrchat.totp) {
     console.error("No VRChat credentials provided");
     return;
   }
   await vrcClient
     .get("/auth/user", {
       headers: {
-        Authorization: `Basic ${btoa(`${encodeURIComponent(config.config.credentials.vrchat.username)}:${encodeURIComponent(config.config.credentials.vrchat.password)}`)}`,
+        Authorization: `Basic ${btoa(`${encodeURIComponent(data.config.credentials.vrchat.username)}:${encodeURIComponent(data.config.credentials.vrchat.password)}`)}`,
       },
     })
     .catch(() => {});
@@ -50,7 +50,7 @@ export async function init() {
         digits: 6,
         period: 30,
         secret: Secret.fromBase32(
-          config.config.credentials.vrchat.totp.replace(/ /g, "")
+          data.config.credentials.vrchat.totp.replace(/ /g, "")
         ),
       })).generate(),
     })

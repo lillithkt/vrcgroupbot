@@ -1,5 +1,5 @@
 import Capability, { Capabilities } from "capabilities";
-import config from "config";
+import data from "data";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import SlashCommand from "discord/commands";
 import { sendMessage } from "discord/rest";
@@ -10,13 +10,13 @@ import VRCLog, { LogEvent, LogEventColors, LogEventReadable } from "types/vrclog
 import { getValidGroups, vrcClient } from "vrchat";
 
 let lastFetched = new Date().toISOString();
-if (existsSync(join(config.stateDirectory, "lastFetched"))) {
-  lastFetched = readFileSync(join(config.stateDirectory, "lastFetched"), "utf8");
-  sendMessage(config.config.discord.channelIds.logs, "Restored last fetched date: " + lastFetched);
+if (existsSync(join(data.stateDirectory, "lastFetched"))) {
+  lastFetched = readFileSync(join(data.stateDirectory, "lastFetched"), "utf8");
+  sendMessage(data.config.discord.channelIds.logs, "Restored last fetched date: " + lastFetched);
 }
 addShutdownHook(() => {
   console.log("Saving last fetched date");
-  writeFileSync(join(config.stateDirectory, "lastFetched"), lastFetched);
+  writeFileSync(join(data.stateDirectory, "lastFetched"), lastFetched);
   process.exit(0);
 });
 export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
@@ -25,7 +25,7 @@ export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
       getValidGroups()
         .filter(
           (i) =>
-            config.config.vrchat.groupIds[i.id].capabilities[
+            data.config.vrchat.groupIds[i.id].capabilities[
               Capabilities.Logs
             ] !== undefined
         )
@@ -111,7 +111,7 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
   if (embeds.length === 0) return;
   // chunk the embeds into 10
   for (let i = 0; i < embeds.length; i += 10) {
-    await sendMessage(config.config.discord.channelIds.logs, {
+    await sendMessage(data.config.discord.channelIds.logs, {
       embeds: embeds.slice(i, i + 10),
     });
   }
@@ -126,18 +126,18 @@ async function updateLogs() {
     console.error(e);
     try {
       await sendMessage(
-        config.config.discord.channelIds.logs,
+        data.config.discord.channelIds.logs,
         "Error fetching group logs"
       );
       if (e instanceof Error) {
-        await sendMessage(config.config.discord.channelIds.logs, e.message);
+        await sendMessage(data.config.discord.channelIds.logs, e.message);
         await sendMessage(
-          config.config.discord.channelIds.logs,
+          data.config.discord.channelIds.logs,
           e.stack ?? "no stack provided"
         );
       } else {
         await sendMessage(
-          config.config.discord.channelIds.logs,
+          data.config.discord.channelIds.logs,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (e as any).toString()
         );
@@ -187,7 +187,7 @@ export default new Capability(
     ),
   ],
   async () => {
-    setInterval(updateLogs, config.config.logScanningInterval ||
+    setInterval(updateLogs, data.config.logScanningInterval ||
       (1000 * 60 * 5));
   }
 );

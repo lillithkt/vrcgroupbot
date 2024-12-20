@@ -1,5 +1,5 @@
 import { CapabilityPermissionRequirements } from "capabilities";
-import config from "config";
+import data from "data";
 import { login } from "discord/bot";
 import VRCGroup, { VRCGroupPermission } from "types/vrcgroup";
 import { init, setValidGroups, vrcClient } from "vrchat";
@@ -10,12 +10,12 @@ import "./hooks";
 
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection at:", promise, "reason:", reason);
-  sendMessage(config.config.discord.channelIds.logs, `Unhandled Rejection at: ${promise} reason: ${reason}`);
+  sendMessage(data.config.discord.channelIds.logs, `Unhandled Rejection at: ${promise} reason: ${reason}`);
 });
 
 process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception:", err);
-  sendMessage(config.config.discord.channelIds.logs, `Uncaught Exception: ${err}`);
+  sendMessage(data.config.discord.channelIds.logs, `Uncaught Exception: ${err}`);
 });
 
 (async () => {
@@ -23,7 +23,7 @@ process.on("uncaughtException", (err) => {
   await init();
 
   const groups = await Promise.all(
-    Object.keys(config.config.vrchat.groupIds).map(async (i) => {
+    Object.keys(data.config.vrchat.groupIds).map(async (i) => {
       try {
         const data = await vrcClient.get(`/groups/${i}?includeRoles=true`);
         if (data.status !== 200) {
@@ -35,10 +35,10 @@ process.on("uncaughtException", (err) => {
         return data.data as VRCGroup;
       } catch (e) {
         await sendMessage(
-          config.config.discord.channelIds.logs,
+          data.config.discord.channelIds.logs,
           `Error fetching group ${i}`
         );
-        const group = config.config.vrchat.groupIds[i];
+        const group = data.config.vrchat.groupIds[i];
         console.error(`Error fetching group ${group.groupName ? `${group.groupName} (${i})` : i}`);
         console.error(e);
       }
@@ -51,13 +51,13 @@ process.on("uncaughtException", (err) => {
     }
     if (group.membershipStatus !== "member") {
       sendMessage(
-        config.config.discord.channelIds.logs,
+        data.config.discord.channelIds.logs,
         `Bot is not a member of group ${group.name}`
       );
       continue;
     }
     const enabledCapabilities = Object.keys(
-      config.config.vrchat.groupIds[group.id].capabilities
+      data.config.vrchat.groupIds[group.id].capabilities
     );
     const requiredPerms = enabledCapabilities
       .map(
@@ -73,7 +73,7 @@ process.on("uncaughtException", (err) => {
     );
     if (missingPermissions.length > 0) {
       sendMessage(
-        config.config.discord.channelIds.logs,
+        data.config.discord.channelIds.logs,
         `Bot is missing permissions in group ${group.name}: ${missingPermissions.join(", ")}`
       );
       continue;
@@ -81,7 +81,7 @@ process.on("uncaughtException", (err) => {
     validGroups.push(group);
   }
   await sendMessage(
-    config.config.discord.channelIds.logs,
+    data.config.discord.channelIds.logs,
     `Listening to the following groups:\n${validGroups.map((group) => `- ${group.name}`).join("\n")}`
   );
   setValidGroups(validGroups);

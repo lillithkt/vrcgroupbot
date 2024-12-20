@@ -88,6 +88,10 @@ export default new Capability([
             value: userObjData.status,
           },
           {
+            name: "Status Text",
+            value: userObjData.statusDescription,
+          },
+          {
             name: "Bio",
             value: userObjData.bio,
           },

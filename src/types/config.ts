@@ -1,6 +1,7 @@
 import { Capabilities } from "capabilities";
 import { ChannelLabel } from "channels";
 
+
 export default interface iConfig {
   $schema: string;
   credentials: {
@@ -27,6 +28,12 @@ export default interface iConfig {
     >;
   };
   logScanningInterval: number | undefined;
+  linking: {
+    roles: {
+      linked: string;
+      over18: string | undefined;
+    };
+  } | undefined;
   discord: {
     ownerIds: string[];
     roleNames: Record<string, string>;

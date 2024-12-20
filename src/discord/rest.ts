@@ -1,7 +1,7 @@
-import config from "config";
+import data from "data";
 import { APIMessage, MessageCreateOptions, REST, Routes } from "discord.js";
 export const rest = new REST({ version: "10" }).setToken(
-  config.config.credentials.discord.token
+  data.config.credentials.discord.token
 );
 
 export async function sendMessage(
