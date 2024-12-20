@@ -26,6 +26,7 @@ export default interface iConfig {
       }
     >;
   };
+  logScanningInterval: number | undefined;
   discord: {
     ownerIds: string[];
     roleNames: Record<string, string>;

@@ -186,6 +186,7 @@ export default new Capability(
     ),
   ],
   async () => {
-    setInterval(updateLogs, 1000 * 60 * 2.5);
+    setInterval(updateLogs, config.config.logScanningInterval ||
+      (1000 * 60 * 5));
   }
 );

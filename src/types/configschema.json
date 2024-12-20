@@ -124,6 +124,9 @@
                     ],
                     "additionalProperties": false
                 },
+                "logScanningInterval": {
+                    "type": "number"
+                },
                 "discord": {
                     "type": "object",
                     "properties": {
