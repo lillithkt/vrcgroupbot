@@ -26,21 +26,8 @@ export default new Capability([
         .setName("shutdown")
         .setDescription("[Owner Only] Shut down the bot"),
     async (interaction) => {
-      reloadConfig();
       await interaction.reply("Shutting down");
       await shutdown();
-    },
-    undefined,
-    true
-  ),
-  new SlashCommand(
-    () =>
-      new SlashCommandBuilder()
-        .setName("reloadconfig")
-        .setDescription("[Owner Only] Reload the configuration"),
-    async (interaction) => {
-      reloadConfig();
-      await interaction.reply("Configuration reloaded");
     },
     undefined,
     true
