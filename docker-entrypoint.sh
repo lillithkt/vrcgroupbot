@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "Starting the application..."
+
 EXIT_CODE=0
 while true; do
     node /dist/index.js
