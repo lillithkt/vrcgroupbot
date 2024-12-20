@@ -22,9 +22,9 @@ ENV TZ=America/New_York
 ENV NODE_ENV=production
 
 WORKDIR /dist
-COPY docker-entrypoint.sh /usr/local/bin/
+COPY docker-entrypoint.sh ./
 COPY --from=0 /src/package.json /src/pnpm-lock.yaml ./
 COPY --from=0 /src/node_modules ./node_modules
 COPY --from=0 /src/dist/* ./
 
-CMD ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["./docker-entrypoint.sh"]
