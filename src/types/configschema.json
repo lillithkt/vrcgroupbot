@@ -130,9 +130,6 @@
                 "linking": {
                     "type": "object",
                     "properties": {
-                        "linkOnJoin": {
-                            "type": "boolean"
-                        },
                         "roles": {
                             "type": "object",
                             "properties": {
@@ -150,7 +147,6 @@
                         }
                     },
                     "required": [
-                        "linkOnJoin",
                         "roles"
                     ],
                     "additionalProperties": false
