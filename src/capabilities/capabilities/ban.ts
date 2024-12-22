@@ -55,12 +55,13 @@ export default new Capability([
       if (!user) {
         return await interaction.reply("Invalid user");
       }
-      const userObj = await vrcClient.get(`/users/${user}`);
-      if (userObj.status !== 200) {
-        return await interaction.reply("Invalid user");
-      }
-      const userObjData = userObj.data as VRCUser;
       try {
+        const userObj = await vrcClient.get(`/users/${user}`);
+        if (userObj.status !== 200) {
+          return await interaction.reply("Invalid user");
+        }
+        const userObjData = userObj.data as VRCUser;
+
         const res = await vrcClient.post(`/groups/${group.id}/bans`, {
           userId: userObjData.id,
         });
@@ -148,12 +149,13 @@ export default new Capability([
       if (!user) {
         return await interaction.reply("Invalid user");
       }
-      const userObj = await vrcClient.get(`/users/${user}`);
-      if (userObj.status !== 200) {
-        return await interaction.reply("Invalid user");
-      }
-      const userObjData = userObj.data as VRCUser;
       try {
+        const userObj = await vrcClient.get(`/users/${user}`);
+        if (userObj.status !== 200) {
+          return await interaction.reply("Invalid user");
+        }
+        const userObjData = userObj.data as VRCUser;
+
         const res = await vrcClient.delete(
           `/groups/${group.id}/bans/${userObjData.id}`
         );
