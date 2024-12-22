@@ -26,7 +26,7 @@ export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
         .filter(
           (i) =>
             data.config.vrchat.groupIds[i.id].capabilities[
-              Capabilities.Logs
+            Capabilities.Logs
             ] !== undefined
         )
         .map(async (group) => {
@@ -96,7 +96,7 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
           ])
           if ((log.data as any).imageId) {
             const fileInfo = await vrcClient.get(`/file/${(log.data as any).imageId}`).then((res) => res.data);
-            const latestVersion = (fileInfo.data as {
+            const latestVersion = (fileInfo as {
               versions: {
                 version: number;
               }[]
