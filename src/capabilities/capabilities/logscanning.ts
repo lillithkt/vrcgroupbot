@@ -41,6 +41,7 @@ export async function getNewLogs(): Promise<Map<string, VRCLog[]>> {
               console.error(e.response.data);
             });
           lastFetched = new Date().toISOString();
+          writeFileSync(join(data.stateDirectory, "lastFetched"), lastFetched);
           return [
             group.id,
             newLogs.results.sort((i, a) => {
