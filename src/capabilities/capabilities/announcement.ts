@@ -1,11 +1,12 @@
 import { AxiosError } from "axios";
 import { checkCapability } from "capabilities/util";
+import data from "data";
 import { SlashCommandBuilder } from "discord.js";
 import SlashCommand from "discord/commands";
 import { getValidGroups, vrcClient } from "vrchat";
 import Capability, { Capabilities } from "../";
 
-export default new Capability([
+const cap = new Capability([
   new SlashCommand(
     () =>
       new SlashCommandBuilder()
@@ -87,3 +88,5 @@ export default new Capability([
     }
   ),
 ]);
+
+export default Object.keys(data.config.vrchat.groupIds).length !== 0 ? cap : new Capability([])
