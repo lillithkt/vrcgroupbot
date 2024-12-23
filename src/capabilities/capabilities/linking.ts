@@ -65,7 +65,7 @@ const linkingCap = new Capability([
                         }
                         const userRes = await vrcClient.get("users/" + userId);
                         const user = userRes.data as VRCUser;
-                        if (user.statusDescription !== code) {
+                        if (!user.statusDescription.toLocaleLowerCase().includes(code)) {
                             await interaction.followUp("Invalid code, please run /link again");
                             collector.stop();
                             return;
