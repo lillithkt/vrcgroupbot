@@ -29,7 +29,7 @@ const linkingCap = new Capability([
             await interaction.reply("Please send the link to your VRChat Profile");
             const collector = new MessageCollector(interaction.channel, {
                 filter: (msg) => msg.author.id === interaction.user.id,
-                time: 60000,
+                time: 1000 * 60 * 5,
             });
             let state = LinkingState.AwaitingLink;
             let userId: string | undefined;
@@ -87,9 +87,9 @@ const linkingCap = new Capability([
                         state = LinkingState.Done;
                         collector.stop();
                         break;
-                    }
-                });
-            }),
+                }
+            });
+        }),
     new SlashCommand(
         () =>
             new SlashCommandBuilder()
