@@ -48,7 +48,7 @@ const cap = new Capability([
 
       if (!checkCapability(roles, group, Capabilities.Invite)) {
         return await interaction.reply(
-          "You do not have permission to ban users from this group"
+          "You do not have permission to invite users to this group"
         );
       }
       const user = interaction.options.get("user")?.value;
