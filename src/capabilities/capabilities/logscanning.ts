@@ -96,13 +96,15 @@ export async function sendNewLogs(groups: Map<string, VRCLog[]>) {
             }
           ])
           if ((log.data as any).imageId) {
-            const fileInfo = await vrcClient.get(`/file/${(log.data as any).imageId}`).then((res) => res.data);
-            const latestVersion = (fileInfo as {
-              versions: {
+            try {
+              const fileInfo = await vrcClient.get(`/file/${(log.data as any).imageId}`).then((res) => res.data);
+              const latestVersion = (fileInfo as {
+                versions: {
                 version: number;
               }[]
-            }).versions.sort((a, b) => b.version - a.version)[0];
-            embed.setThumbnail(`https://api.vrchat.cloud/api/1/file/${(log.data as any).imageId}/${latestVersion.version}`);
+              }).versions.sort((a, b) => b.version - a.version)[0];
+              embed.setThumbnail(`https://api.vrchat.cloud/api/1/file/${(log.data as any).imageId}/${latestVersion.version}`);
+            } catch {}
           }
         }
       }
